@@ -38,16 +38,11 @@ jobs:
           - os: macos-latest
             TARGET: macos
             CMD_BUILD: >
-                pyinstaller -F -w -n clipster -i resources/clipster.icns abctl.py &&
+                pyinstaller --onefile abctl.py &&
                 cd dist/ &&
-                zip -r9 clipster clipster.app/
-            OUT_FILE_NAME: clipster.zip
-            ASSET_MIME: application/zip
-          - os: windows-latest
-            TARGET: windows
-            CMD_BUILD: pyinstaller -F -w -n clipster -i resources/clipster.ico abctl.py
-            OUT_FILE_NAME: clipster.exe
-            ASSET_MIME: application/vnd.microsoft.portable-executable
+                tar -cvzf ./dist/abctl.tar.gz ./dist/abctl
+            OUT_FILE_NAME: abctl.tar.gz
+            ASSET_MIME: application/gzip
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.8
