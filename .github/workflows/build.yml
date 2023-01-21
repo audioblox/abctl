@@ -39,7 +39,6 @@ jobs:
             TARGET: macos
             CMD_BUILD: >
                 pyinstaller --onefile abctl.py &&
-                cd dist/ &&
                 tar -cvzf ./dist/abctl.tar.gz ./dist/abctl
             OUT_FILE_NAME: abctl.tar.gz
             ASSET_MIME: application/gzip
