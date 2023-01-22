@@ -29,7 +29,7 @@ def login():
     print("Login to SoundIngots.com")
     email = get_email()
     password = get_password()
-    print("email", password)
+    print(email, password)
 
 
 @app.command()
