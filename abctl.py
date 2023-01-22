@@ -82,10 +82,6 @@ def status():
     user_res = Api.me()
     user = json.loads(user_res.text)
     print("Logged in as %s" % user["username"])
-    # if not os.path.exists(settings.USER_FILE):
-    #     print("Not logged in. Run this command to login:")
-    #     print("abctl login")
-    #     sys.exit()
 
 
 if __name__ == "__main__":
