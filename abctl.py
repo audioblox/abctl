@@ -1,5 +1,9 @@
+import os
 import typer
 import getpass
+import sys
+import json
+import settings
 
 from typing import Callable
 
@@ -7,6 +11,7 @@ from utils import (
     get_email,
     get_password,
 )
+from api import Api
 
 app = typer.Typer()
 
@@ -25,14 +30,35 @@ def get_input(label: str, secure=False, validate: Callable = None):
 
 
 @app.command()
-def login():
+def login(
+    email: str = typer.Option(None, "--email", "-e", help="Your email address"),
+    password: str = typer.Option(None, "--password", "-p", help="Your password"),
+    force: bool = typer.Option(False, "--force", "-f", help="Logout current user"),
+):
     """
     Log in with your email address and password.
     """
-    print("Login to SoundIngots.com")
-    email = get_email()
-    password = get_password()
-    print(email, password)
+    e = get_email(email)
+    p = get_password(password)
+    res = Api.login(e, p)
+    try:
+        os.remove(settings.USER_FILE)
+    except Exception:
+        pass
+
+    if res.status_code != 200:
+        print("ERROR: Login failed")
+        sys.exit(res.status_code)
+
+    tokens = json.loads(res.text)
+
+    f = open(settings.USER_FILE, "w")
+    f.write(json.dumps(tokens))
+    f.close()
+
+    user_res = Api.me()
+    user = json.loads(user_res.text)
+    print("Logged in as %s" % user["username"])
 
 
 @app.command()
@@ -40,7 +66,12 @@ def logout():
     """
     Log out
     """
-    print("BYE!")
+    try:
+        os.remove(settings.USER_FILE)
+        print("You have been logged out")
+    except Exception:
+        print("You are not logged in")
+        pass
 
 
 @app.command()
@@ -48,7 +79,13 @@ def status():
     """
     Who you're logged in as
     """
-    print("Return login status")
+    user_res = Api.me()
+    user = json.loads(user_res.text)
+    print("Logged in as %s" % user["username"])
+    # if not os.path.exists(settings.USER_FILE):
+    #     print("Not logged in. Run this command to login:")
+    #     print("abctl login")
+    #     sys.exit()
 
 
 if __name__ == "__main__":
