@@ -7,14 +7,26 @@ import settings
 from typing import Dict
 
 
-def read_userfile() -> Dict:
+def read_userfile(verbose=False) -> Dict:
+    if verbose:
+        print("\n----------")
+        print("\nread_userfile")
+
     file_path = settings.USER_FILE
+    if verbose:
+        print("\nReading userfile from:", file_path)
+
     if not os.path.exists(file_path):
+        if verbose:
+            print("\nFile does not exist")
         return {}
 
     f = open(file_path, "r")
     user = json.loads(f.read())
     f.close()
+    if verbose:
+        print("\nRead file, returning:", user)
+        print("\n==========")
     return user
 
 
@@ -23,27 +35,47 @@ def get_url(url: str) -> str:
 
 
 class Api:
-    def __update__file__(refresh: str, access: str, me: Dict):
+    def __update__file__(refresh: str, access: str, me: Dict, verbose=False):
+        if verbose:
+            print("\n----------")
+            print("\nApi.__update_file__")
+
         tokens = {
             "refresh": refresh,
             "access": access,
         }
+        user = {
+            **tokens,
+            **me,
+        }
+
+        if verbose:
+            print("\nFile contents:", user)
+
         f = open(settings.USER_FILE, "w")
-        f.write(
-            json.dumps(
-                {
-                    **tokens,
-                    **me,
-                }
-            )
-        )
+        f.write(json.dumps(user))
         f.close()
+
+        if verbose:
+            print("\nClosed file")
+            print("\n==========")
+
         return
 
     @classmethod
-    def __authenticate__(self):
-        user = read_userfile()
+    def __authenticate__(self, verbose=False):
+        if verbose:
+            print("\n----------")
+            print("\nApi.__authenticate__")
+
+        user = read_userfile(verbose)
+
+        if verbose:
+            print("\nUser from file:", user)
+
         if "refresh" not in user or "access" not in user:
+            if verbose:
+                print("\nTokens not found in user file.")
             print("You are not logged in")
             try:
                 os.remove(settings.USER_FILE)
@@ -53,19 +85,40 @@ class Api:
             sys.exit(401)
 
         headers = {"Authorization": "Bearer %s" % user["access"]}
+        if verbose:
+            print("\nAuthorization header:", "Bearer %s" % user["access"][0:10])
 
         res = requests.get(get_url("account/me"), headers=headers)
+
+        if verbose:
+            print("\nAccount response:", res.status_code, res.text)
+
         if res.status_code == 200:
-            self.__update__file__(user["refresh"], user["access"], json.loads(res.text))
+            self.__update__file__(
+                user["refresh"], user["access"], json.loads(res.text), verbose
+            )
+            if verbose:
+                print("\nReturning", res.text)
+
             return res
+
+        if verbose:
+            print("\nRefreshing token...")
 
         access = json.loads(
             requests.post(
                 get_url("account/token/refresh"), {"refresh": user["refresh"]}
             ).text
         )["access"]
+
+        if verbose:
+            print("\nNew access token:", access[0:10])
+
         headers = {"Authorization": "Bearer %s" % access}
         res = requests.get(get_url("account/me"), headers=headers)
+
+        if verbose:
+            print("\nResponse:", res.status_code, res.text)
 
         if res.status_code != 200:
             print("You are not logged in")
@@ -76,6 +129,10 @@ class Api:
             sys.exit(res.status_code)
 
         self.__update__file__(user["refresh"], access, json.loads(res.text))
+
+        if verbose:
+            print("\nReturning", res)
+            print("\n==========")
 
         return res
 
@@ -94,8 +151,15 @@ class Api:
         return requests.post(get_url(url), payload)
 
     @classmethod
-    def me(self) -> requests.Response:
-        return self.__authenticate__()
+    def me(self, verbose=False) -> requests.Response:
+        if verbose:
+            print("\n----------")
+            print("\nApi.me")
+        result = self.__authenticate__(verbose)
+        if verbose:
+            print("\nReturning:", result)
+            print("\n==========")
+        return result
 
     @classmethod
     def login(self, email: str, password: str) -> requests.Response:

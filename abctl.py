@@ -33,7 +33,6 @@ def get_input(label: str, secure=False, validate: Callable = None):
 def login(
     email: str = typer.Option(None, "--email", "-e", help="Your email address"),
     password: str = typer.Option(None, "--password", "-p", help="Your password"),
-    force: bool = typer.Option(False, "--force", "-f", help="Logout current user"),
 ):
     """
     Log in with your email address and password.
@@ -75,12 +74,24 @@ def logout():
 
 
 @app.command()
-def status():
+def status(verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose mode")):
     """
     Who you're logged in as
     """
-    user_res = Api.me()
+    if verbose:
+        print("\n----------")
+        print("\nabctl.status")
+
+    user_res = Api.me(verbose)
+
+    if verbose:
+        print("\nUser response received:", user_res.text)
+
     user = json.loads(user_res.text)
+
+    if verbose:
+        print("\nUser JSON:", user)
+
     print("Logged in as %s" % user["username"])
 
 
