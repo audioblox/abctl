@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../homebrew-audioblox"
+		}
+	],
+	"settings": {
+		"terminal.integrated.env.osx": {
+			"ABCTLCONFIG": "${workspaceFolder}/.abctl/abctluser"
+		},
+		"terminal.integrated.env.windows": {
+			"ABCTLCONFIG": "${workspaceFolder}\\.abctl\\abctluser"
+		},
+		"terminal.integrated.env.linux": {
+			"ABCTLCONFIG": "${workspaceFolder}/.abctl/abctluser"
+		},
+	}
+}

@@ -41,7 +41,7 @@ def login(
     p = get_password(password)
     res = Api.login(e, p)
     try:
-        os.remove(settings.USER_FILE)
+        os.remove(os.getenv("ABCTLCONFIG"))
     except Exception:
         pass
 
@@ -51,7 +51,7 @@ def login(
 
     tokens = json.loads(res.text)
 
-    f = open(settings.USER_FILE, "w")
+    f = open(os.getenv("ABCTLCONFIG"), "w")
     f.write(json.dumps(tokens))
     f.close()
 
@@ -66,7 +66,7 @@ def logout():
     Log out
     """
     try:
-        os.remove(settings.USER_FILE)
+        os.remove(os.getenv("ABCTLCONFIG"))
         print("You have been logged out")
     except Exception:
         print("You are not logged in")
@@ -93,6 +93,7 @@ def status(verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose 
         print("\nUser JSON:", user)
 
     print("Logged in as %s" % user["username"])
+    print(os.getenv("ABCTLCONFIG"))
 
 
 if __name__ == "__main__":

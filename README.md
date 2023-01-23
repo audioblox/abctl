@@ -16,4 +16,4 @@
 12. `brew uninstall --force abctl`
 13. `rm -rf /usr/local/Homebrew/Library/Taps/audioblox`
 14. `brew tap audioblox/audioblox`
-15. `brew install abctl`
+15. `brew install --build-from-source abctl`
