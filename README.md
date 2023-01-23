@@ -13,6 +13,7 @@
 9. Go to `audioblox/homebrew-audioblox/abctl.rb`, and past the url and sha
 10. Copy the entire `audioblox/homebrew-audioblox/abctl.rb` file and paste it in the file brew created, removing all original content
 11. Push the changes to main
+12. Ensure you have an env set to the userfile location. `export ABCTLCONFIG=~/abctluser`
 12. `brew uninstall --force abctl`
 13. `rm -rf /usr/local/Homebrew/Library/Taps/audioblox`
 14. `brew tap audioblox/audioblox`
