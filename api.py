@@ -52,7 +52,7 @@ class Api:
         if verbose:
             print("\nFile contents:", user)
 
-        f = open(os.getenv("ABCTLCONFIG"), "w")
+        f = open(os.getenv("ABCTLCONFIG"), "w+")
         f.write(json.dumps(user))
         f.close()
 

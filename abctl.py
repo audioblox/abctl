@@ -51,7 +51,7 @@ def login(
 
     tokens = json.loads(res.text)
 
-    f = open(os.getenv("ABCTLCONFIG"), "w")
+    f = open(os.getenv("ABCTLCONFIG"), "w+")
     f.write(json.dumps(tokens))
     f.close()
 
