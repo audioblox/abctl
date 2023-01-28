@@ -11,6 +11,7 @@ from utils import confirm_input
 from utils import (
     get_email,
     get_password,
+    workspace_check,
 )
 from api import Api
 
@@ -115,6 +116,7 @@ def init(
     if os.path.exists(settings.WORKDIR_FILE) and not force:
         f = open(settings.WORKDIR_FILE, "r")
         current_dir = f.read()
+        f.close()
         if os.path.isdir(current_dir) and current_dir != cwd:
             print("WARNING: Workspace already configured. Current workspace:")
             print(current_dir)
@@ -144,12 +146,19 @@ def init(
     f.close()
 
     # create subdirs
-    for subdir in settings.WORKDIR_SUBDIRS:
-        if not os.path.isdir(os.path.join(cwd, subdir)):
-            os.makedirs(os.path.join(cwd, subdir))
+    workspace_check()
 
     print("Initialized workspace at:")
     print(cwd)
+
+
+@app.command()
+def push():
+    Api.login_check()
+    workspace = workspace_check()
+    for subdir in settings.WORKDIR_SUBDIRS:
+        for f in os.listdir(os.path.join(workspace, subdir)):
+            print(subdir, f)
 
 
 if __name__ == "__main__":

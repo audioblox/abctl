@@ -151,6 +151,10 @@ class Api:
         return requests.post(get_url(url), payload)
 
     @classmethod
+    def login_check(self):
+        self.__authenticate__()
+
+    @classmethod
     def me(self, verbose=False) -> requests.Response:
         if verbose:
             print("\n----------")
