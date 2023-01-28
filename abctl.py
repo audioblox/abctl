@@ -6,6 +6,7 @@ import json
 import settings
 
 from typing import Callable
+from utils import confirm_input
 
 from utils import (
     get_email,
@@ -93,6 +94,61 @@ def status(verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose 
         print("\nUser JSON:", user)
 
     print("Logged in as %s" % user["username"])
+
+
+@app.command()
+def init(
+    dir: str = typer.Argument(".", help="The directory to initialize in"),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="Ignore any current configuration"
+    ),
+):
+    """
+    Initialize your workfolder in the current working directory
+    """
+    # check if workdir already exists
+    if os.path.exists(settings.WORKDIR_FILE) and not force:
+        f = open(settings.WORKDIR_FILE, "r")
+        current_dir = f.read()
+        if os.path.isdir(current_dir):
+            print("WARNING: Workspace already configured. Current workspace:")
+            print(current_dir)
+            print("")
+            confirm_input()
+
+    # get absolute workdir
+    cwd = os.getcwd()
+    # breakpoint()
+    if dir != ".":
+        cwd = os.path.abspath(os.path.join(cwd, dir))
+        if not os.path.isdir(cwd):
+            os.makedirs(cwd)
+
+    # warn if directory is not empty
+    is_empty = True
+    for f in os.listdir(cwd):
+        print(f)
+        if f not in settings.WORKDIR_SUBDIRS:
+            print("NOT EMPTY")
+            is_empty = False
+            break
+
+    if not is_empty:
+        print("WARNING: Directory not empty:")
+        print(cwd)
+        print("")
+        confirm_input()
+
+    # save workdir in settings.WORKDIR_FILE
+    f = open(settings.WORKDIR_FILE, "w+")
+    f.write(cwd)
+    f.close()
+
+    # create workdirs
+    print("INIT", cwd)
+    for subdir in settings.WORKDIR_SUBDIRS:
+        if not os.path.isdir(os.path.join(cwd, subdir)):
+            os.makedirs(os.path.join(cwd, subdir))
 
 
 if __name__ == "__main__":
