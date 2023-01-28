@@ -12,7 +12,7 @@ def read_userfile(verbose=False) -> Dict:
         print("\n----------")
         print("\nread_userfile")
 
-    file_path = os.getenv("ABCTLCONFIG")
+    file_path = settings.USER_FILE
     if verbose:
         print("\nReading userfile from:", file_path)
 
@@ -52,7 +52,7 @@ class Api:
         if verbose:
             print("\nFile contents:", user)
 
-        f = open(os.getenv("ABCTLCONFIG"), "w+")
+        f = open(settings.USER_FILE, "w+")
         f.write(json.dumps(user))
         f.close()
 
@@ -78,7 +78,7 @@ class Api:
                 print("\nTokens not found in user file.")
             print("You are not logged in")
             try:
-                os.remove(os.getenv("ABCTLCONFIG"))
+                os.remove(settings.USER_FILE)
             except Exception:
                 pass
 
@@ -123,7 +123,7 @@ class Api:
         if res.status_code != 200:
             print("You are not logged in")
             try:
-                os.remove(os.getenv("ABCTLCONFIG"))
+                os.remove(settings.USER_FILE)
             except Exception:
                 pass
             sys.exit(res.status_code)
