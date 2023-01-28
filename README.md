@@ -1,3 +1,12 @@
+# GET STARTED
+# Installation
+1. `brew tap audioblox/audioblox`
+2. `brew install --build-from-source abctl`
+
+# Usage
+1. `cd` to the folder you want as the root of your audioblox projects
+2. `abctl init` to initialize the workspace
+
 # ADMIN ONLY
 
 ## DEPLOY [WIP]

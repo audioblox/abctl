@@ -1,4 +1,5 @@
 import getpass
+import sys
 
 from typing import Callable
 from validators import (
@@ -32,3 +33,11 @@ def get_password(value: str):
     return get_input(
         "Enter password:\t", validate=validate_password, secure=True, value=value
     )
+
+
+def confirm_input(question: str = "Continue anyway?"):
+    answer = input("%s y/n\n" % question)
+    if not answer.lower() in ["y", "yes"]:
+        print("Aborted")
+        sys.exit(0)
+    print("")
