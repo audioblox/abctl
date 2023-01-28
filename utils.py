@@ -69,9 +69,9 @@ def workspace_check():
     return configured_dir
 
 
-def hash_file_content(file_path: str) -> int:
+def hash_file_content(file_path: str) -> str:
     hash = None
     with open(file_path, "rb") as f:
-        bytes = f.read()  # read entire file as bytes
+        bytes = f.read()
         hash = hashlib.sha256(bytes).hexdigest()
     return hash
