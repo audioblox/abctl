@@ -5,6 +5,7 @@ import requests
 import settings
 
 from typing import Dict
+from utils import hash_file_content
 
 
 def read_userfile(verbose=False) -> Dict:
@@ -172,3 +173,8 @@ class Api:
             "password": password,
         }
         return self.__post__("account/token", payload, auth_required=False)
+
+    @classmethod
+    def upload_file(self, file_path: str, subdir: str):
+        print("Uploading %s/%s" % (subdir, os.path.basename(file_path)))
+        print(hash_file_content(file_path))

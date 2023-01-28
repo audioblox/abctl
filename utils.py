@@ -2,6 +2,7 @@ import getpass
 import sys
 import os
 import settings
+import hashlib
 
 from typing import Callable
 from validators import (
@@ -66,3 +67,11 @@ def workspace_check():
         if not os.path.isdir(os.path.join(configured_dir, subdir)):
             os.makedirs(os.path.join(configured_dir, subdir))
     return configured_dir
+
+
+def hash_file_content(file_path: str) -> int:
+    hash = None
+    with open(file_path, "rb") as f:
+        bytes = f.read()  # read entire file as bytes
+        hash = hashlib.sha256(bytes).hexdigest()
+    return hash

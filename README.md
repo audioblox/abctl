@@ -7,6 +7,24 @@
 1. `cd` to the folder you want as the root of your audioblox projects
 2. `abctl init` to initialize the workspace
 
+# EDITORS ONLY
+## Install the audioblox cli
+1. `brew tap audioblox/audioblox`
+2. `brew install abctl`
+
+## Login to abctl
+1. `abctl login`
+2. Fill in your email address and password when prompted
+
+## Setup your workspace
+1. `abctl init [workspacefolder]`
+
+## Pull work that is assigned to you into your workspace
+1. `abctl pull`
+
+## Push your work from your workspace to the app
+2. `abctl push`
+
 # ADMIN ONLY
 
 ## DEPLOY [WIP]
