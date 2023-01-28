@@ -14,7 +14,7 @@
 10. Copy the entire `audioblox/homebrew-audioblox/abctl.rb` file and paste it in the file brew created, removing all original content
 11. Push the changes to main:
 12. `cd ../homebrew-audioblox && git commit -am "Update" && git push && cd ../abctl`
-13. [OPTIONAL] Ensure you have an env set to the userfile location. `export ABCTL_ROOT_DIR=~/.abctluser`
+13. [OPTIONAL] Ensure you have an env set to the userfile location. `export ABCTL_ROOT_DIR=~/.abctl`
 14. `brew uninstall --force abctl`
 15. `rm -rf /usr/local/Homebrew/Library/Taps/audioblox`
 16. `brew tap audioblox/audioblox`
