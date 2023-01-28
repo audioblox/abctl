@@ -40,3 +40,4 @@ def confirm_input(question: str = "Continue anyway?"):
     if not answer.lower() in ["y", "yes"]:
         print("Aborted")
         sys.exit(0)
+    print("")
