@@ -121,7 +121,6 @@ def init(
             print("")
             confirm_input()
 
-    # breakpoint()
     if not os.path.isdir(cwd):
         os.makedirs(cwd)
 
