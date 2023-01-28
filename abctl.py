@@ -96,4 +96,6 @@ def status(verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose 
 
 
 if __name__ == "__main__":
+    if not os.path.isdir(settings.ROOT_DIR):
+        os.makedirs(settings.ROOT_DIR)
     app()
