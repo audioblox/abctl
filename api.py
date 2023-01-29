@@ -142,7 +142,12 @@ class Api:
         if auth_required:
             self.__authenticate__()
 
-        return requests.get(get_url(url))
+        headers = None
+        if auth_required:
+            user = read_userfile()
+            headers = {"Authorization": "Bearer %s" % user["access"]}
+
+        return requests.get(get_url(url), headers=headers)
 
     @classmethod
     def __post__(self, url: str, payload: Dict, files: str = None, auth_required=True):
