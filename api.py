@@ -145,11 +145,11 @@ class Api:
         return requests.get(get_url(url))
 
     @classmethod
-    def __post__(self, url: str, payload: Dict, auth_required=True):
+    def __post__(self, url: str, payload: Dict, files: str = None, auth_required=True):
         if auth_required:
             self.__authenticate__()
 
-        return requests.post(get_url(url), payload)
+        return requests.post(get_url(url), payload, files=files)
 
     @classmethod
     def login_check(self):
@@ -176,5 +176,28 @@ class Api:
 
     @classmethod
     def upload_file(self, file_path: str, subdir: str):
-        print("Uploading %s/%s" % (subdir, os.path.basename(file_path)))
-        print(hash_file_content(file_path))
+        name = os.path.basename(file_path)
+        print("\nPreparing %s/%s for upload" % (subdir, name))
+        size = os.path.getsize(file_path)
+        hash = hash_file_content(file_path=file_path)
+
+        # Check if file already exists
+        res = self.__get__("audio_file/existing_file/%i/%s" % (size, hash))
+        if res.status_code == 200:
+            print("%s already exists. File uuid:\n%s" % (name, res.json()["file_uuid"]))
+            # return False
+
+        # Upload the file
+        print("Uploading %s..." % name)
+        file = open(file_path, "rb")
+        files = {
+            "file_0": file,
+        }
+        payload = {
+            "file_0_modified": os.path.getmtime(file_path),
+        }
+        res = self.__post__(
+            "audio_file/audio_files",
+            payload,
+            files=files,
+        )

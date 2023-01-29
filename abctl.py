@@ -158,8 +158,10 @@ def push():
     workspace = workspace_check()
     for subdir in settings.WORKDIR_SUBDIRS:
         for f in os.listdir(os.path.join(workspace, subdir)):
+            if not f.strip().split(".")[-1] in settings.FILE_EXTENSIONS:
+                continue
             Api.upload_file(file_path=os.path.join(workspace, subdir, f), subdir=subdir)
-            break
+    print("All done!")
 
 
 if __name__ == "__main__":
