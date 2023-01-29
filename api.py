@@ -137,16 +137,18 @@ class Api:
 
         return res
 
+    def __get_headers__(auth_required: bool):
+        if not auth_required:
+            return
+        user = read_userfile()
+        return {"Authorization": "Bearer %s" % user["access"]}
+
     @classmethod
     def __get__(self, url: str, auth_required=True):
         if auth_required:
             self.__authenticate__()
 
-        headers = None
-        if auth_required:
-            user = read_userfile()
-            headers = {"Authorization": "Bearer %s" % user["access"]}
-
+        headers = self.__get_headers__(auth_required=auth_required)
         return requests.get(get_url(url), headers=headers)
 
     @classmethod
@@ -154,11 +156,7 @@ class Api:
         if auth_required:
             self.__authenticate__()
 
-        headers = None
-        if auth_required:
-            user = read_userfile()
-            headers = {"Authorization": "Bearer %s" % user["access"]}
-
+        headers = self.__get_headers__(auth_required=auth_required)
         return requests.post(get_url(url), payload, files=files, headers=headers)
 
     @classmethod
@@ -187,7 +185,7 @@ class Api:
     @classmethod
     def upload_file(self, file_path: str, subdir: str):
         name = os.path.basename(file_path)
-        print("\nPreparing %s/%s for upload" % (subdir, name))
+        print("Preparing %s/%s for upload" % (subdir, name))
         size = os.path.getsize(file_path)
         hash = hash_file_content(file_path=file_path)
 
@@ -195,7 +193,7 @@ class Api:
         res = self.__get__("audio_file/existing_file/%i/%s" % (size, hash))
         if res.status_code == 200:
             print("%s already exists. File uuid:\n%s" % (name, res.json()["file_uuid"]))
-            # return False
+            return False
 
         # Upload the file
         print("Uploading %s..." % name)

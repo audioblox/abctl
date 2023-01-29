@@ -161,6 +161,7 @@ def push():
             if not f.strip().split(".")[-1] in settings.FILE_EXTENSIONS:
                 continue
             Api.upload_file(file_path=os.path.join(workspace, subdir, f), subdir=subdir)
+            print("")
     print("All done!")
 
 
