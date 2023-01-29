@@ -149,7 +149,12 @@ class Api:
         if auth_required:
             self.__authenticate__()
 
-        return requests.post(get_url(url), payload, files=files)
+        headers = None
+        if auth_required:
+            user = read_userfile()
+            headers = {"Authorization": "Bearer %s" % user["access"]}
+
+        return requests.post(get_url(url), payload, files=files, headers=headers)
 
     @classmethod
     def login_check(self):
