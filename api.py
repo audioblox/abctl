@@ -161,7 +161,7 @@ class Api:
 
     @classmethod
     def login_check(self):
-        self.__authenticate__()
+        return self.__authenticate__()
 
     @classmethod
     def me(self, verbose=False) -> requests.Response:
@@ -190,7 +190,7 @@ class Api:
         hash = hash_file_content(file_path=file_path)
 
         # Check if file already exists
-        res = self.__get__("audio_file/existing_file/%i/%s" % (size, hash))
+        res = self.__get__("audio_file/existing_source_file/%i/%s" % (size, hash))
         if res.status_code == 200:
             print("%s already exists. File uuid:\n%s" % (name, res.json()["file_uuid"]))
             return False
@@ -203,6 +203,7 @@ class Api:
         }
         payload = {
             "file_0_modified": os.path.getmtime(file_path),
+            "file_0_is_source": "True",
         }
         res = self.__post__(
             "audio_file/audio_files",

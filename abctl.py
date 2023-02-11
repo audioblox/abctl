@@ -154,14 +154,35 @@ def init(
 
 
 @app.command()
-def push():
-    Api.login_check()
+def push(
+    force: bool = typer.Option(
+        False,
+        "--force",
+        "-f",
+        help="Ignore push to production warning (superuser only)",
+    ),
+):
+    user = json.loads(Api.login_check().text)
     workspace = workspace_check()
+
+    # Warn superusers if they're pushing to prod
+    if (
+        user["is_superuser"]
+        and settings.PROD_BASE_URL in settings.BASE_URL
+        and not force
+    ):
+        confirm_input(
+            "Hold on there, superuser! Looks like you're pushing files to PROD. Are you sure you want to do that?"
+        )
+
     for subdir in settings.WORKDIR_SUBDIRS:
         for f in os.listdir(os.path.join(workspace, subdir)):
             if not f.strip().split(".")[-1] in settings.FILE_EXTENSIONS:
                 continue
-            Api.upload_file(file_path=os.path.join(workspace, subdir, f), subdir=subdir)
+            if subdir == "raw_out":
+                Api.upload_file(
+                    file_path=os.path.join(workspace, subdir, f), subdir=subdir
+                )
             print("")
     print("All done!")
 
