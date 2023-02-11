@@ -78,7 +78,7 @@ def logout():
 @app.command()
 def status(verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose mode")):
     """
-    Who you're logged in as
+    Who you're logged in as and your current workspace directory
     """
     if verbose:
         print("\n----------")
@@ -95,6 +95,7 @@ def status(verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose 
         print("\nUser JSON:", user)
 
     print("Logged in as %s" % user["username"])
+    print("\nWorking directory:\n%s" % workspace_check())
 
 
 @app.command()
